@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR-Code Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Inter:wght@100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Varela+Round&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body {
+      background-image: linear-gradient(to right top, #2fcf92, #232f63);
+    }
+
+    * {
+      font-family: "Varela Round", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="min-h-screen flex flex-col justify-start items-center">
+    <h1 class="text-4xl text-white mb-2 bg-slate-800 rounded-md w-full p-8 text-center">Générateur de QR code</h1>
+    <div class="flex flex-row w-full justify-center items-center gap-8 my-4">
+      <div class="w-full max-w-lg p-8 rounded-lg shadow-lg bg-slate-800">
+        <div class="w-full w-18 h-18"> <div class="  rounded-full w-18 h-18 text-center bg-emerald-500 p-4 my-4"><i class="fa fa-qrcode fa-4x text-white"></i></div></div>
+        <form id="generator" class="text-white">
+          <div class="mb-6">
+            <label for="codeSize" class="block text-WHITE text-sm font-bold mb-2">Select Size:</label>
+            <select id="codeSize" name="codeSize"
+              class="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+              <option value="150x150">150x150</option>
+              <option value="200x200">200x200</option>
+              <option value="250x250">250x250</option>
+              <option value="300x300" selected="selected">300x300</option>
+              <option value="350x350">350x350</option>
+              <option value="400x400">400x400</option>
+            </select>
+          </div>
+          <div class="mb-6">
+            <label for="codeData" class="block text-WHITE text-sm font-bold mb-2">Data to Encode:</label>
+            <textarea id="codeData" name="codeData" rows="4"
+              class="shadow appearance-none border rounded bg-opacity-40 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Enter a URL or text"></textarea>
+          </div>
+          <div class="flex items-center justify-between">
+            <button id="generate"
+              class="bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="button">
+              Generate <i class="fas fa-qrcode"></i>
+            </button>
+          </div>
+        </form>
+        <p id="alert" class="text-red-500 text-xs italic mt-4"></p>
+      </div>
+      <div class="p-4 h-full shadow-lg rounded-lg   text-center bg-slate-800 w-full max-w-lg">
+        <div id="image" class="mb-4 font-bold text-white">Image will show here</div>
+        <div id="link" class="mb-4"></div>
+        <div id="code" class="text-sm"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script>
+    function clearAlerts() {
+      document.getElementById("alert").innerHTML = "";
+      document.getElementById("image").innerHTML = "Image will show here";
+      document.getElementById("link").innerHTML = "";
+      document.getElementById("code").innerHTML = "";
+    }
+
+    $("#generate").on("click", function () {
+      var data = $("#codeData").val();
+      var size = $("#codeSize").val();
+      clearAlerts();
+
+      if (data.trim() === "") {
+        $("#alert").text("Please enter a URL or text.");
+      } else {
+        var qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}&data=${encodeURIComponent(data)}`;
+
+        $("#image").html(`<img src="${qrUrl}" alt="QR Code" class="mx-auto" />`);
+        $("#link").html(`<a class="bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" href="${qrUrl}" download>Télécharger QR Code</a>`);
+        $("#code").html(`<p><strong class="text-white">Image Link:</strong> <a href="${qrUrl}" class="text-blue-500 underline">${qrUrl}</a></p>`);
+      }
+    });
+  </script>
+</body>
+
+</html>
